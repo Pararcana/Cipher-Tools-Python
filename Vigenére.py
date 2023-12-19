@@ -12,7 +12,7 @@ def fitness(arr):
     total += trigrams["".join(arr[i: i + 3])]
   return total
 
-def solve(key, ciphertext):
+def vigenere(key, ciphertext):
   plaintext = []
   for i, v in enumerate(ciphertext):
     newChar = ord(v) - ord(key[i % len(key)])
@@ -28,21 +28,15 @@ while stability != 10:
 
   for char in alpha:
     testKey[randChar] = char
-    buffer = solve(testKey, cipherFilter)
+    buffer = vigenere(testKey, cipherFilter)
 
     fitnessArr[0].append(buffer)
     fitnessArr[1].append(fitness(buffer))
     fitnessArr[2].append(testKey.copy())
 
   best = fitnessArr[1].index(max(fitnessArr[1]))
-  print("".join(fitnessArr[0][best]) + "\n\n")
-  print(fitnessArr[1][best])
-
   stability = (fitnessArr[2][best] == key and stability + 1 or 0)
   key = fitnessArr[2][best]
-  
-  print(stability)
-  print(key)
-  
-print("".join(solve(key, cipherFilter)))
-print(fitness(solve(key, cipherFilter)))
+
+  print("".join(fitnessArr[0][best]), fitnessArr[1][best])
+  print(stability, key)
