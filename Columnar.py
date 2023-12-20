@@ -13,27 +13,19 @@ def fitness(arr):
     total += trigrams["".join(arr[i: i + 3])]
   return total
 
-def step(key, columns):
+def columnar(key, columns):
   plaintext = []
   for i in range(block):
     for j in key:
       plaintext.append(columns[j][i])
   return plaintext
 
-def solve():
-  columns = []
-  solutions = [[], []]
-  choices = [i for i in range(keyLen)]
+solutions = {}
+choices = [i for i in range(keyLen)]
+columns = [ciphertext[block * i: block * (i + 1)] for i in range(keyLen)]
 
-  for i in range(keyLen):
-    columns.append(ciphertext[block * i: block * (i + 1)])
-
-  for key in permutations(choices, keyLen):
-    plaintext = step(key, columns)
-    solutions[0].append(plaintext)
-    solutions[1].append(fitness(plaintext))
-
-  return solutions[0][solutions[1].index(max(solutions[1]))]
-
-print("".join(solve()))
-#upload to git
+for key in permutations(choices, keyLen):
+  plaintext = columnar(key, columns)
+  solutions.update({fitness(plaintext): plaintext})
+plaintext = solutions[max(solutions.keys())]
+print("".join(plaintext))
